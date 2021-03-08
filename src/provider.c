@@ -100,9 +100,8 @@ int collector_provider_register(
 
 #ifdef USE_AGGREGATOR
     #define MAXCHAR 100
-    char * aggregator_list = NULL;
     FILE *fp_agg = NULL;
-    aggregator_addr_file = getenv("AGGREGATOR_ADDRESS_FILE");
+    char * aggregator_addr_file = getenv("AGGREGATOR_ADDRESS_FILE");
     if(aggregator_addr_file) {
         char svr_addr_str[MAXCHAR];
         uint16_t p_id;
