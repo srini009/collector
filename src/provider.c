@@ -10,6 +10,10 @@
 #include "provider.h"
 #include "types.h"
 
+#ifdef USE_AGGREGATOR
+#include <aggregator/aggregator-provider-handle.h>
+#endif
+
 static void collector_finalize_provider(void* p);
 
 /* Functions to manipulate the hash of metrics */
