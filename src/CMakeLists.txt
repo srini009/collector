@@ -23,6 +23,10 @@ set (collector-pkg "share/cmake/collector")
 # set version fo shared library
 set (collector-vers "${COLLECTOR_VERSION_MAJOR}.${COLLECTOR_VERSION_MINOR}")
 
+if(${ENABLE_AGGREGATOR})
+  add_definitions("-DUSE_AGGREGATOR")
+endif(${ENABLE_AGGREGATOR})
+
 # server library
 add_library (collector-server ${server-src-files} ${dummy-src-files})
 target_link_libraries (collector-server
