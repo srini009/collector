@@ -34,6 +34,13 @@ target_link_libraries (collector-server
     PkgConfig::ABTIO
     PkgConfig::UUID)
 #    PkgConfig::JSONC)
+
+if(${ENABLE_AGGREGATOR})
+  add_definitions("-DUSE_AGGREGATOR")
+  target_link_libraries (collector-server ${AGGREGATOR_INCLUDE_DIR})
+  target_include_directories (collector-server ${AGGREGATOR_LIBRARIES})
+endif(${ENABLE_AGGREGATOR})
+
 target_include_directories (collector-server PUBLIC $<INSTALL_INTERFACE:include>)
 target_include_directories (collector-server BEFORE PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>)
