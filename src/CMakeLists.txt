@@ -37,8 +37,8 @@ target_link_libraries (collector-server
 
 if(${ENABLE_AGGREGATOR})
   add_definitions("-DUSE_AGGREGATOR")
-  target_link_libraries (collector-server ${AGGREGATOR_INCLUDE_DIR})
-  target_include_directories (collector-server ${AGGREGATOR_LIBRARIES})
+  TARGET_LINK_LIBRARIES(collector-server ${AGGREGATOR_INCLUDE_DIR})
+  INCLUDE_DIRECTORIES(${AGGREGATOR_LIBRARIES})
 endif(${ENABLE_AGGREGATOR})
 
 target_include_directories (collector-server PUBLIC $<INSTALL_INTERFACE:include>)
