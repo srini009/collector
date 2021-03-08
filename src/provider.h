@@ -24,6 +24,11 @@ typedef struct collector_provider {
     hg_id_t list_metrics_id;
     hg_id_t metric_fetch_id;
     /* ... add other RPC identifiers here ... */
+    uint8_t use_aggregator;
+#ifdef USE_AGGREGATOR
+    aggregator_client_t aggcl;
+    aggregator_provider_handle_t aggphs;
+#endif
 } collector_provider;
 
 collector_return_t collector_provider_metric_create(const char *ns, const char *name, collector_metric_type_t t, const char *desc, collector_taglist_t tl, collector_metric_t* m, collector_provider_t provider);

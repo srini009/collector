@@ -90,11 +90,43 @@ int collector_provider_register(
             collector_list_metrics_ult, provider_id, p->pool);
     margo_register_data(mid, id, (void*)p, NULL);
     p->list_metrics_id = id;
+    p->use_aggregator = 0;
 
     /* add other RPC registration here */
     /* ... */
 
     /* add backends available at compiler time (e.g. default/dummy backends) */
+
+
+#ifdef USE_AGGREGATOR
+    #define MAXCHAR 100
+    char * aggregator_list = NULL;
+    FILE *fp_agg = NULL;
+    aggregator_addr_file = getenv("AGGREGATOR_ADDRESS_FILE");
+    if(aggregator_addr_file) {
+        char svr_addr_str[MAXCHAR];
+        uint16_t p_id;
+        fp_agg = fopen(aggregator_addr_file, "r");
+        int32_t num_aggregators;
+        int i = 0;
+        fscanf(fp_agg, "%d\n", num_aggregators);
+        aggregator_client_init(mid, &p->aggcl);
+        aggregator_provider_handle_t *aggphs = (aggregator_provider_handle_t *)malloc(sizeof(aggregator_provider_handle_t)*num_aggregators);
+        while(fscanf(fp_agg, "%s %d\n", svr_addr_str, &p_id) != EOF) {
+          hg_addr_t svr_addr; 
+          int hret = margo_addr_lookup(mid, svr_addr_str, &svr_addr);
+          assert(hret == HG_SUCCESS);
+          aggphs[i] = calloc(1, sizeof(*aggphs[i])); 
+          margo_addr_dup(p->aggcl->mid, svr_addr, &(aggphs[i]->addr));
+          aggphs[i]->provider_id = p_id; 
+          i++;
+        }
+        p->use_aggregator = 1;
+        p->aggphs = aggphs;
+    } else {
+        fprintf(stderr, "AGGREGATOR_ADDRESS_FILE is not set. Continuing on without aggregator support");
+    }
+#endif
 
     if(a.push_finalize_callback)
         margo_provider_push_finalize_callback(mid, p, &collector_finalize_provider, p);
@@ -113,6 +145,9 @@ static void collector_finalize_provider(void* p)
     margo_deregister(provider->mid, provider->list_metrics_id);
     /* deregister other RPC ids ... */
     remove_all_metrics(provider);
+#ifdef USE_AGGREGATOR
+    //DEREGISTER_AGGREGATOR_CLIENT_AND_PROVIDER_HANDLES();
+#endif
     free(provider);
     margo_info(provider->mid, "COLLECTOR provider successfuly finalized");
 }
@@ -155,6 +190,10 @@ collector_return_t collector_provider_metric_create(const char *ns, const char *
     fprintf(stderr, "\nCreated metric %d of type %d\n", id, metric->type);
     fprintf(stderr, "Num metrics is: %lu\n", provider->num_metrics);
 
+#ifdef USE_AGGREGATOR
+    //aggregator_stream_id stream_id = aggregator_stream_create(string name, ...); //va_arg string list
+    //aggregator_stream_attach_buffer((void*) buffer, func f_returning_current_buffer_index, uint8_t update_frequency_in_seconds);
+#endif
     *m = metric;
 
     return COLLECTOR_SUCCESS;
@@ -243,6 +282,11 @@ collector_return_t collector_provider_metric_destroy(collector_metric_t m, colle
     if(!metric) {
         return COLLECTOR_ERR_INVALID_METRIC;
     }
+
+#ifdef USE_AGGREGATOR
+    //aggregator_stream_detach_buffer(aggregator_stream_id stream_id);
+    //aggregator_stream_destroy(aggregator_stream_id stream_id);
+#endif
 
     /* remove the metric from the provider */
     remove_metric(provider, &metric->id);
