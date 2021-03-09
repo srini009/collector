@@ -12,6 +12,7 @@
 #include "types.h"
 #ifdef USE_AGGREGATOR
 #include <aggregator/aggregator-provider-handle.h>
+#include <aggregator/aggregator-client.h>
 #endif
 
 typedef struct collector_provider {
