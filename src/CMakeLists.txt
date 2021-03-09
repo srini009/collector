@@ -35,12 +35,6 @@ target_link_libraries (collector-server
     PkgConfig::UUID)
 #    PkgConfig::JSONC)
 
-if(${ENABLE_AGGREGATOR})
-  add_definitions("-DUSE_AGGREGATOR")
-  target_include_directories (collector-server PUBLIC ${AGGREGATOR_INCLUDE_DIR})
-  target_link_libraries (collector-server ${AGGREGATOR_LIBRARIES})
-endif(${ENABLE_AGGREGATOR})
-
 target_include_directories (collector-server PUBLIC $<INSTALL_INTERFACE:include>)
 target_include_directories (collector-server BEFORE PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>)
@@ -61,6 +55,13 @@ target_include_directories (collector-client BEFORE PUBLIC
 set_target_properties (collector-client
     PROPERTIES VERSION ${COLLECTOR_VERSION}
     SOVERSION ${COLLECTOR_VERSION_MAJOR})
+
+if(${ENABLE_AGGREGATOR})
+  add_definitions("-DUSE_AGGREGATOR")
+  target_include_directories (collector-server PUBLIC ${AGGREGATOR_INCLUDE_DIR})
+  target_include_directories (collector-client PUBLIC ${AGGREGATOR_INCLUDE_DIR})
+  target_link_libraries (collector-server ${AGGREGATOR_LIBRARIES})
+endif(${ENABLE_AGGREGATOR})
 
 # admin library
 add_library (collector-admin ${admin-src-files})
