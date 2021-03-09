@@ -7,13 +7,12 @@
 #include "collector/collector-server.h"
 #include "collector/collector-common.h"
 #include "collector/collector-backend.h"
-#include "provider.h"
-#include "types.h"
-
 #ifdef USE_AGGREGATOR
 #include <aggregator/aggregator-provider-handle.h>
 #include <aggregator/aggregator-client.h>
 #endif
+#include "provider.h"
+#include "types.h"
 
 static void collector_finalize_provider(void* p);
 
