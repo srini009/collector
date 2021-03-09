@@ -115,12 +115,12 @@ int collector_provider_register(
         fscanf(fp_agg, "%d\n", num_aggregators);
         aggregator_client_init(mid, &p->aggcl);
         aggregator_provider_handle_t *aggphs = (aggregator_provider_handle_t *)malloc(sizeof(aggregator_provider_handle_t)*num_aggregators);
-        while(fscanf(fp_agg, "%s %d\n", svr_addr_str, &p_id) != EOF) {
+        while(fscanf(fp_agg, "%s %u\n", svr_addr_str, &p_id) != EOF) {
           hg_addr_t svr_addr; 
           int hret = margo_addr_lookup(mid, svr_addr_str, &svr_addr);
           assert(hret == HG_SUCCESS);
           aggphs[i] = calloc(1, sizeof(*aggphs[i])); 
-          margo_addr_dup(p->aggcl->mid, svr_addr, &(aggphs[i]->addr));
+          margo_addr_dup(mid, svr_addr, &(aggphs[i]->addr));
           aggphs[i]->provider_id = p_id; 
           i++;
         }
