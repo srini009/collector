@@ -10,6 +10,9 @@
 #include <abt-io.h>
 #include "uthash.h"
 #include "types.h"
+#ifdef USE_AGGREGATOR
+#include <aggregator/aggregator-provider-handle.h>
+#endif
 
 typedef struct collector_provider {
     /* Margo/Argobots/Mercury environment */

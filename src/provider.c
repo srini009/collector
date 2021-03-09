@@ -12,6 +12,7 @@
 
 #ifdef USE_AGGREGATOR
 #include <aggregator/aggregator-provider-handle.h>
+#include <aggregator/aggregator-client.h>
 #endif
 
 static void collector_finalize_provider(void* p);
